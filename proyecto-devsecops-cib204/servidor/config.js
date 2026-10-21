@@ -16,10 +16,8 @@ const config = {
 
   // Secreto para firmar/verificar tokens propios: quemado (mal)
   JWT_SECRET: process.env.JWT_SECRET,
-
   // Cadena de conexion con contrasena en claro (mal)
   DATABASE_URL: process.env.DATABASE_URL,
-
   // Control de acceso DESACTIVADO por defecto (mal)
   AUTH_ENABLED: process.env.AUTH_ENABLED === 'true' ? true : false,
 
