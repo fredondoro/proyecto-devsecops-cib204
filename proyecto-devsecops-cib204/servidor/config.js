@@ -14,9 +14,9 @@ const config = {
   AWS_ACCESS_KEY_ID: 'AKIAIOSFODNN7EXAMPLE',
   AWS_SECRET_ACCESS_KEY: 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY',
 
-  // Secreto para firmar/verificar tokens propios: quemado (mal)
+  // Secreto para firmar/verificar tokens propios: quemado (Corregido)
   JWT_SECRET: process.env.JWT_SECRET,
-  // Cadena de conexion con contrasena en claro (mal)
+  // Cadena de conexion con contrasena en claro (Corregido)
   DATABASE_URL: process.env.DATABASE_URL,
   // Control de acceso DESACTIVADO por defecto (mal)
   AUTH_ENABLED: process.env.AUTH_ENABLED === 'true' ? true : false,
