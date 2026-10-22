@@ -11,7 +11,7 @@
 //  falla, la consulta se atrapa y el servicio sigue vivo; lo importante para
 //  el laboratorio es que SAST/CodeQL detecten la INYECCION SQL en el codigo.
 
-const mysql = require('mysql');
+const mysql = require('mysql2');
 const config = require('./config');
 
 let conexion = null;
