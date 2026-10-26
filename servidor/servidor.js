@@ -22,7 +22,7 @@ const config = require('./config');
 const { requiereAuth } = require('./auth');
 // Justificación: la API usa JWT en el header Authorization, sin cookies de sesión; CSRF no aplica.
 // nosemgrep: javascript.express.security.audit.express-check-csurf-middleware-usage.express-check-csurf-middleware-usage
-// const app = express();
+const app = express();
 app.use(express.json());
 
 // [VULN-5] CORS totalmente abierto: cualquier origen puede consumir la API.
@@ -102,7 +102,7 @@ app.post('/calcular', (req, res) => {
 //   "8.8.8.8; cat /etc/passwd". Lo detectan CodeQL y Semgrep.
 //   CWE-78 (OS Command Injection)
 //Modificado Fanny Redondo
-const { execFile } = require('child_process');
+//const { execFile } = require('child_process');
 if (!/^[a-zA-Z0-9.-]{1,64}$/.test(host)) 
   return res.status(400).json({ error: 'Host invalido' });
 execFile('ping', ['-c','1',host], (e,out)=>res.json({salida:out}));
