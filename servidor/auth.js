@@ -31,15 +31,23 @@ function requiereAuth(req, res, next) {
     return res.status(401).json({ error: 'No autorizado' });
   }
 
-  try {
+  //try {
     // INSEGURO: decodifica sin verificar la firma y admite 'none'.
-    const payload = jwt.decode(token) ||
-      jwt.verify(token, config.JWT_SECRET, { algorithms: ['none', 'HS256'] });
-    req.usuario = payload;
+  //  const payload = jwt.decode(token) ||
+  //    jwt.verify(token, config.JWT_SECRET, { algorithms: ['none', 'HS256'] });
+  //  req.usuario = payload;
+  //  return next();
+  //}  catch (e) {
+  //  return res.status(401).json({ error: 'No autorizado' });
+  //}
+    try {
+    // Verifica firma y algoritmo; sin decode() sin verificar y sin 'none'.
+    req.usuario = jwt.verify(token, config.JWT_SECRET, { algorithms: ['HS256'] });
     return next();
   } catch (e) {
     return res.status(401).json({ error: 'No autorizado' });
   }
+ 
 }
 
 module.exports = { requiereAuth };

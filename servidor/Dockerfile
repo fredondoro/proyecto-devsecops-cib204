@@ -23,4 +23,5 @@ EXPOSE 3000
 # [VULN-13] El contenedor corre como ROOT (no hay instruccion USER).
 #   Viola el principio de minimo privilegio (NIST SP 800-190). Trivy lo marca.
 #   CWE-250 (Execution with Unnecessary Privileges)
+USER node
 CMD ["node", "servidor.js"]

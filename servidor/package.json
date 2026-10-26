@@ -14,6 +14,7 @@
     "express": "^4.22.3",
     "express-jwt": "8.4.1",
     "helmet": "7.1.0",
+    "jsonwebtoken": "^9.0.3",
     "jwks-rsa": "3.1.0",
     "mysql2": "^3.24.6"
   },
