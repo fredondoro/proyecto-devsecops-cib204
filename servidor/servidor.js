@@ -15,7 +15,7 @@
 
 const express = require('express');
 const cors = require('cors');
-const { exec } = require('child_process');
+const { execFile } = require('child_process');
 const cifrado = require('./cifrado');
 const db = require('./db');
 const config = require('./config');
@@ -102,10 +102,9 @@ app.post('/calcular', (req, res) => {
 //   CWE-78 (OS Command Injection)
 app.get('/diagnostico', (req, res) => {
   const host = req.query.host || '127.0.0.1';
-  //Modificado Fanny Redondo. exec('ping -c 1 ' + host, (err, stdout, stderr) => {
+  //exec('ping -c 1 ' + host, (err, stdout, stderr) => {
     //res.json({ salida: stdout, error: stderr });
   //});
-  const { execFile } = require('child_process');
   if (!/^[a-zA-Z0-9.-]{1,64}$/.test(host)) 
     return res.status(400).json({ error: 'Host invalido' });
   execFile('ping', ['-c','1',host], (e,out)=>res.json({salida:out}));
