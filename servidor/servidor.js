@@ -15,12 +15,13 @@
 
 const express = require('express');
 const cors = require('cors');
-const { execFile } = require('child_process');
+const { exec } = require('child_process');
 const cifrado = require('./cifrado');
 const db = require('./db');
 const config = require('./config');
 const { requiereAuth } = require('./auth');
-
+// nosemgrep: javascript.express.security.audit.express-check-csurf-middleware-usage.express-check-csurf-middleware-usage
+// Justificación: la API usa JWT en el header Authorization, sin cookies de sesión; CSRF no aplica.
 const app = express();
 app.use(express.json());
 
@@ -90,7 +91,7 @@ app.post('/calcular', (req, res) => {
   if (!nums.every(n => typeof n === 'number')) 
     return res.status(400).json({ error: 'Entrada invalida' });
   res.json({ resultado: nums.reduce((a,b)=>a+b,0) });
-
+  
   } catch (e) {
     res.status(400).json({ error: 'Expresion invalida' });
   }
@@ -101,15 +102,10 @@ app.post('/calcular', (req, res) => {
 //   "8.8.8.8; cat /etc/passwd". Lo detectan CodeQL y Semgrep.
 //   CWE-78 (OS Command Injection)
 //Modificado Fanny Redondo
-app.get('/diagnostico', (req, res) => {
-  const host = String(req.query.host || '127.0.0.1');
-  if (!/^[a-zA-Z0-9][a-zA-Z0-9.-]{0,63}$/.test(host)) {
-    return res.status(400).json({ error: 'Host invalido' });
-  }
-  execFile('ping', ['-c', '1', host], (err, stdout) => {
-    res.json({ salida: stdout });
-  });
-});
+const { execFile } = require('child_process');
+if (!/^[a-zA-Z0-9.-]{1,64}$/.test(host)) 
+  return res.status(400).json({ error: 'Host invalido' });
+execFile('ping', ['-c','1',host], (e,out)=>res.json({salida:out}));
 
 if (require.main === module) {
   app.listen(config.PUERTO, () => {
