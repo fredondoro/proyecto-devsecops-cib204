@@ -30,12 +30,12 @@ try {
 function buscarBitacora(nombre, callback) {
   // const sql = "SELECT * FROM bitacora WHERE usuario = '" + nombre + "'";
   const sql = 'SELECT * FROM bitacora WHERE usuario = ?';
-  //conexion.query(sql, [nombre], (err, filas) => callback(null, { filas }));
+  conexion.query(sql, [nombre], (err, filas) => callback(null, { filas }));
   if (!conexion) {
     return callback(null, { sqlEjecutado: sql, filas: [] });
   }
-  //conexion.query(sql, function (err, filas) 
-  conexion.query(sql, [nombre], (err, filas) => callback(null, { filas }))
+  // conexion.query(sql, [nombre], (err, filas) => callback(null, { filas }))
+  conexion.query(sql, function (err, filas) 
   {
     if (err) {
       return callback(null, { sqlEjecutado: sql, filas: [], nota: err.code });
