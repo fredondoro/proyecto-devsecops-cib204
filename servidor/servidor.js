@@ -97,15 +97,17 @@ app.post('/calcular', (req, res) => {
   }
 });
 
-// [VULN-10] Inyeccion de comandos del sistema operativo.
-//   El parametro 'host' entra sin sanitizar a exec(). Un atacante puede enviar
-//   "8.8.8.8; cat /etc/passwd". Lo detectan CodeQL y Semgrep.
-//   CWE-78 (OS Command Injection)
-//Modificado Fanny Redondo
-//const { execFile } = require('child_process');
-if (!/^[a-zA-Z0-9.-]{1,64}$/.test(host)) 
-  return res.status(400).json({ error: 'Host invalido' });
-execFile('ping', ['-c','1',host], (e,out)=>res.json({salida:out}));
+// Modif Fanny Redondo [VULN-10] CORREGIDO: inyeccion de comandos (CWE-78).
+app.get('/diagnostico', (req, res) => {
+  const host = String(req.query.host || '127.0.0.1');
+  if (!/^[a-zA-Z0-9][a-zA-Z0-9.-]{0,63}$/.test(host)) {
+    return res.status(400).json({ error: 'Host invalido' });
+  }
+  execFile('ping', ['-c', '1', host], { timeout: 5000 }, (err, stdout) => {
+    if (err) return res.status(502).json({ error: 'No se pudo hacer ping al host' });
+    res.json({ salida: stdout });
+  });
+});
 
 if (require.main === module) {
   app.listen(config.PUERTO, () => {
