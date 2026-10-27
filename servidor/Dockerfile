@@ -21,7 +21,6 @@ RUN npm ci --omit=dev
 # Instala dependencias en la imagen (sin fijar el lockfile con npm ci).
 #Mod Fanny RUN npm install
 COPY --chown=node:node . .
-EXPOSE 3000
 
 # [VULN-13] El contenedor corre como ROOT (no hay instruccion USER).
 #   Viola el principio de minimo privilegio (NIST SP 800-190). Trivy lo marca.
