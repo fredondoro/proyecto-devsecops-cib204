@@ -30,4 +30,8 @@ const config = {
   PUERTO: process.env.PORT || 3000,
 };
 
+// JWKS de Keycloak: de aqui se toman las llaves publicas para validar el token (RS256).
+config.JWKS_URI = process.env.JWKS_URI ||
+  `${config.KEYCLOAK_URL}/realms/${config.KEYCLOAK_REALM}/protocol/openid-connect/certs`;
+
 module.exports = config;
