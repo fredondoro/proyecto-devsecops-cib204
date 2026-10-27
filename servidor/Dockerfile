@@ -8,7 +8,7 @@
 #   paquetes de sistema vulnerables. La solucion es una etiqueta fija y una
 #   imagen slim (p.ej. node:20-slim).  CWE-1104 / mala practica de imagen.
 #Mof Fanny FROM node:latest
-FROM node:24-slim
+FROM node:24-trixie-slim
 
 WORKDIR /app
 
