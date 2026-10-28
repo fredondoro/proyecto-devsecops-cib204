@@ -8,11 +8,14 @@ services:
     container_name: cifrado
     ports:
       - "3000:3000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway" 
     environment:
       # El control de acceso arranca APAGADO (rama insegura). Se activa en la
       # Seccion de IAM poniendo AUTH_ENABLED=true.
       - AUTH_ENABLED=${AUTH_ENABLED:-false}
-      - KEYCLOAK_URL=http://keycloak:8080
+      #- KEYCLOAK_URL=http://keycloak:8080
+      - KEYCLOAK_URL=http://host.docker.internal:8080
       - KEYCLOAK_REALM=appmovil
     restart: unless-stopped
 

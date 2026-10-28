@@ -23,13 +23,13 @@ const { requiereAuth } = require('./auth');
 // Justificación: la API usa JWT en el header Authorization, sin cookies de sesión; CSRF no aplica.
 // nosemgrep: javascript.express.security.audit.express-check-csurf-middleware-usage.express-check-csurf-middleware-usage
 const app = express();
+
 app.use(express.json());
 
 // [VULN-5] CORS totalmente abierto: cualquier origen puede consumir la API.
 //   Lo reporta OWASP ZAP (DAST) y Semgrep. La solucion es restringir a los
 //   origenes de confianza.  CWE-942 (Overly Permissive CORS)
 
-//Mod Fanny Redondo
 const helmet = require('helmet');
 app.use(helmet());
 app.use(cors({ origin: config.ORIGEN_PERMITIDO }));
@@ -51,31 +51,32 @@ app.get('/llave', (req, res) => {
 });
 
 app.post('/cifrar', requiereAuth, (req, res) => {
+  const texto = req.body.texto;
+  if (typeof texto !== 'string' || texto.length < 1 || texto.length > 180) {
+    return res.status(400).json({ error: 'Texto invalido (1 a 180 caracteres)' });
+  }
   try {
-    // [VULN-7] Sin validacion de entrada: no se controla tipo ni tamano.
-    //   Un cuerpo enorme o de tipo inesperado puede tumbar el servicio.
-    //   CWE-20 (Improper Input Validation)
-    const texto = req.body.texto;
     const resultado = cifrado.cifrar(texto, llaves.publicKey);
     res.json({ cifrado: resultado });
   } catch (e) {
-    // [VULN-8] Exposicion de detalles internos: se devuelve el stack al cliente.
-    //   CWE-209 (Information Exposure Through an Error Message)
-    res.status(500).json({ error: e.message, stack: e.stack });
+    res.status(500).json({ error: 'Error al cifrar' });
   }
 });
 
 app.post('/descifrar', requiereAuth, (req, res) => {
+  const cifradoTxt = req.body.cifrado;
+  if (typeof cifradoTxt !== 'string' || cifradoTxt.length < 1 || cifradoTxt.length > 1024) {
+    return res.status(400).json({ error: 'Texto cifrado invalido' });
+  }
   try {
-    const cifradoTxt = req.body.cifrado;
     const resultado = cifrado.descifrar(cifradoTxt, llaves.privateKey);
     res.json({ descifrado: resultado });
   } catch (e) {
-    res.status(500).json({ error: e.message, stack: e.stack });
+    res.status(500).json({ error: 'Error al descifrar' });
   }
 });
 
-// Demostracion de INYECCION SQL (CWE-89).
+// CORREGIDO Demostracion de INYECCION SQL (CWE-89).
 app.get('/buscar', (req, res) => {
   const nombre = req.query.nombre || '';
   db.buscarBitacora(nombre, (err, data) => {

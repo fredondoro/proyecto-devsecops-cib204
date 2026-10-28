@@ -28,7 +28,6 @@ function requiereAuth(req, res, next) {
   }
   validarToken(req, res, (err) => {
     if (err) {
-      console.error('Auth error:', err.message);   // temporal, para diagnostico
       return res.status(401).json({ error: 'No autorizado' });
     }
     next();
