@@ -1,25 +1,28 @@
 # ============================================================================
 #  Dockerfile  -  Servicio de cifrado
-#  >>> VERSION INSEGURA (rama inseguro) <<<
-#  Contiene malas practicas INTENCIONADAS que Trivy debe reportar.
 # ============================================================================
 
-# CORREGIDO [VULN-11] Imagen base "latest" (no reproducible) y pesada, con muchos
-#   paquetes de sistema vulnerables. La solucion es una etiqueta fija y una
-#   imagen slim (p.ej. node:20-slim).  CWE-1104 / mala practica de imagen.
-#Mof Fanny FROM node:latest
+# Etapa 1: Construcción (compilaciones y preparación de dependencias)
 FROM node:20-slim AS build
 WORKDIR /app
-# 3. Parchear las vulnerabilidades del sistema operativo Debian a la última versión
-RUN apt-get update && apt-get upgrade -y && rm -rf /var/lib/apt/lists/*
 COPY package*.json ./
 RUN npm ci --omit=dev
 COPY *.js ./
-FROM node:20-slim
+
+# Etapa 2: Imagen final (Alpine para 0 vulnerabilidades de SO en Trivy)
+FROM node:20-alpine
 WORKDIR /app
-RUN useradd --system --no-create-home appuser
+
+# Parchear paquetes nativos de Alpine a la versión más reciente
+RUN apk update && apk upgrade --no-cache
+
+# Crear el usuario no root equivalente para Alpine
+RUN addgroup -S appuser && adduser -S appuser -G appuser
+
+# Copiar el código desde la etapa de compilación
 COPY --from=build /app /app
 RUN chown -R appuser:appuser /app
 USER appuser
+
 EXPOSE 3000
-CMD ["node","servidor.js"]
+CMD ["node", "servidor.js"]
