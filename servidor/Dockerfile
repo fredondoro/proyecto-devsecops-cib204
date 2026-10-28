@@ -10,6 +10,8 @@
 #Mof Fanny FROM node:latest
 FROM node:20-slim AS build
 WORKDIR /app
+# 3. Parchear las vulnerabilidades del sistema operativo Debian a la última versión
+RUN apt-get update && apt-get upgrade -y && rm -rf /var/lib/apt/lists/*
 COPY package*.json ./
 RUN npm ci --omit=dev
 COPY *.js ./
