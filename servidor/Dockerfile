@@ -8,12 +8,12 @@
 #   paquetes de sistema vulnerables. La solucion es una etiqueta fija y una
 #   imagen slim (p.ej. node:20-slim).  CWE-1104 / mala practica de imagen.
 #Mof Fanny FROM node:latest
-FROM node:20-slim AS build
+FROM node:24-trixie-slim AS build
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci --omit=dev
 COPY *.js ./
-FROM node:20-slim
+FROM node:24-trixie-slim
 WORKDIR /app
 RUN useradd --system --no-create-home appuser
 COPY --from=build /app /app
