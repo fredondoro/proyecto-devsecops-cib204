@@ -14,7 +14,6 @@
 // ============================================================================
 
 const express = require('express');
-app.use(cors())
 const cors = require('cors');
 const { execFile } = require('child_process');
 const cifrado = require('./cifrado');
@@ -24,7 +23,7 @@ const { requiereAuth } = require('./auth');
 // Justificación: la API usa JWT en el header Authorization, sin cookies de sesión; CSRF no aplica.
 // nosemgrep: javascript.express.security.audit.express-check-csurf-middleware-usage.express-check-csurf-middleware-usage
 const app = express();
-
+app.use(cors());
 app.use(express.json());
 
 // [VULN-5] CORS totalmente abierto: cualquier origen puede consumir la API.
