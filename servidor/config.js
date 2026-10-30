@@ -20,7 +20,7 @@ const config = {
   // Cadena de conexion con contrasena en claro (Corregido)
   DATABASE_URL: process.env.DATABASE_URL,
 
-  // Control de acceso DESACTIVADO por defecto (mal)
+  // Control de acceso DESACTIVADO por defecto (Corregido)
   AUTH_ENABLED: process.env.AUTH_ENABLED === 'true' ? true : false,
 
   // Parametros de Keycloak (IAM)

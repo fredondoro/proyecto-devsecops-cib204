@@ -33,7 +33,11 @@ function generarLlaves() {
 function cifrar(textoPlano, llavePublica) {
   const buffer = Buffer.from(String(textoPlano), 'utf8');
   const cifrado = crypto.publicEncrypt(
-    { key: llavePublica, padding: RELLENO },
+    { 
+      key: llavePublica, 
+      padding: RELLENO,
+      oaepHash: 'sha256'
+    },
     buffer
   );
   return cifrado.toString('base64');
@@ -42,7 +46,11 @@ function cifrar(textoPlano, llavePublica) {
 function descifrar(textoCifradoBase64, llavePrivada) {
   const buffer = Buffer.from(String(textoCifradoBase64), 'base64');
   const descifrado = crypto.privateDecrypt(
-    { key: llavePrivada, padding: RELLENO },
+    { 
+      key: llavePrivada, 
+      padding: RELLENO,
+    oaepHash: 'sha256'
+    },
     buffer
   );
   return descifrado.toString('utf8');

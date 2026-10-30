@@ -22,6 +22,12 @@ const validarToken = expressjwt({
 });
 
 function requiereAuth(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  console.log("Header recibido:", authHeader); // IMPRIME EL ENCABEZADO REAL
+
+  if (!authHeader) {
+    return res.status(401).json({ error: 'se requiere token' });
+  }
   // Si el control de acceso esta apagado, deja pasar (solo para pruebas).
   if (!config.AUTH_ENABLED) {
     return next();
