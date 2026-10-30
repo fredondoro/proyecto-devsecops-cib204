@@ -14,6 +14,7 @@
 // ============================================================================
 
 const express = require('express');
+app.use(cors())
 const cors = require('cors');
 const { execFile } = require('child_process');
 const cifrado = require('./cifrado');
